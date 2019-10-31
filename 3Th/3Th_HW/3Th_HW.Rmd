@@ -1,0 +1,53 @@
+---
+title: "3Th HW"
+author: "Kalyani Cauwenberghs"
+date: "10/17/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#do this in console, in order to not install the package many times
+#install.packages("bio3d")
+library(bio3d)
+```
+
+This is the code we want to improve
+```{r}
+s1 <- read.pdb("4AKE") # kinase with drug
+s2 <- read.pdb("1AKE") # kinase no drug
+s3 <- read.pdb("1E4Y") # kinase with drug
+s1.chainA <- trim.pdb(s1, chain="A", elety="CA")
+s2.chainA <- trim.pdb(s2, chain="A", elety="CA")
+s3.chainA <- trim.pdb(s1, chain="A", elety="CA")
+s1.b <- s1.chainA$atom$b
+s2.b <- s2.chainA$atom$b
+s3.b <- s3.chainA$atom$b
+plotb3(s1.b, sse=s1.chainA, typ="l", ylab="Bfactor")
+plotb3(s2.b, sse=s2.chainA, typ="l", ylab="Bfactor")
+plotb3(s3.b, sse=s3.chainA, typ="l", ylab="Bfactor")
+```
+A function for the above code
+```{r}
+#input = 4 letter PDB code, output = residue v. b-factor plot
+pdb_function<-function(four_letter_code){
+  #creates a list of properties of the protein
+  s <- read.pdb(four_letter_code)
+  #trims certain elements from original pdb list
+  s.chainA <- trim.pdb(s, chain="A", elety="CA")
+  #find b factor, which tells us its mobility
+  s.b <- s.chainA$atom$b
+  #plot b residue against factor
+  plotb3(s.b, sse=s.chainA, typ="l", ylab="Bfactor")
+}
+```
+Testing the function will produce the desired result
+```{r}
+pdb_function("4AKE")
+pdb_function("1AKE")
+pdb_function("1E4Y")
+```
+
