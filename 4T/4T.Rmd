@@ -1,0 +1,157 @@
+---
+title: "4T"
+author: "Kalyani Cauwenberghs"
+date: "10/22/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## R functions revisited
+
+Source my functions from last day
+```{r}
+source("http://tinyurl.com/rescale-R")
+```
+
+```{r}
+rescale2(c(1:10),"barry")
+```
+
+```{r}
+rescale(c(1:10),"barry")
+```
+
+Write a function to find where NA elements are in input vectors:
+First make an input vector:
+```{r}
+x <- c( 1, 2, NA, 3, NA)
+y <- c(NA, 3, NA, 3, 4)
+```
+
+```{r}
+is.na(x)
+is.na(y)
+```
+Get positions of NA's
+```{r}
+which(is.na(x))
+which(is.na(y))
+```
+Find where both x and y have an NA
+```{r}
+is.na(x)&is.na(y)
+```
+Taking sum tells us how many true elements in the vector.
+```{r}
+sum(is.na(x)&is.na(y))
+```
+
+Making a function that does the above
+```{r}
+bothNA<-function(x,y){
+  sum(is.na(x)&is.na(y))
+}
+```
+
+```{r}
+bothNA(x,y)
+```
+
+But what if the vectors are of different length?
+```{r}
+x <- c(NA, NA, NA)
+y1 <- c(1, NA, NA)
+y2 <- c(1, NA, NA, NA)
+both_na(x, y1)
+both_na(x, y2)
+```
+
+Recycling: lengthening vectors
+```{r}
+x3 <- c(1, NA, NA)
+x3 <- c(1, NA, NA, 1, NA, NA, 1)
+y3 <- c(1, NA, NA, NA, NA, NA, NA)
+```
+
+Make a new function:
+```{r}
+bothNA2<-function(x,y){
+  if(length(x)!=length(y)){
+    stop("Passed arguments not same length.")
+  }
+  sum(is.na(x)&is.na(y))
+}
+```
+
+```{r}
+bothNA2(x,y3)
+```
+
+Write a function that returns a grade with lowest score dropped
+```{r}
+grade<-function(x){
+  x <- replace(x, is.na(x), 0)  
+  x<-sort(x)
+  mean(x[2:length(x)])
+}
+```
+
+Write another function like above
+```{r}
+grade2<-function(x){
+  if(any(is.na(x))){
+    stop("student is missing HW.")
+  }
+  sum(mean(x[-which.min(x)],ma.rm=true))/length(x)-1
+}
+```
+
+Test function
+```{r}
+# student 1
+x1<-c(100, 100, 100, 100, 100, 100, 100, 90)
+# student 2
+x2<-c(100, NA, 90, 90, 90, 90, 97, 80)
+# student 2
+x3<-c(100, NA, NA, NA, NA, NA, NA, NA)
+```
+
+```{r}
+  grade(x1)
+  grade(x2)
+  grade(x3)
+  grade2(x3)
+  # now grade all students in an example class
+  url <- "https://tinyurl.com/gradeinput"
+  hw<-read.csv(url,row.names=1)
+  apply(hw,1,grade2)
+```
+
+Explore a Bioconductor package
+```{r}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("Rcade")
+```
+Run Vignettes
+```{r}
+source("http://127.0.0.1:24970/library/Rcade/doc/Rcade.Rnw")
+source("Rcade.R")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+

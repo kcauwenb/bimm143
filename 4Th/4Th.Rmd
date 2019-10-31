@@ -1,0 +1,266 @@
+---
+title: "4Th"
+author: "Kalyani Cauwenberghs"
+date: "10/24/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## K-Means Clustering
+```{r}
+#generate some example data for clustering
+tmp <- c(rnorm(30,-3), rnorm(30,3))
+x <- cbind(x=tmp, y=rev(tmp))
+plot(x)
+#run kmeans function
+k<-kmeans(x, centers=2, iter.max = 10, nstart = 20,
+       algorithm = c("Hartigan-Wong", "Lloyd", "Forgy",
+                     "MacQueen"), trace=FALSE)
+k
+```
+
+Q. How many points are in each cluster?
+A. 30
+
+Q. What ‘component’ of your result object details
+ - cluster size?
+```{r}
+k$size
+```
+ - cluster assignment/membership?
+```{r}
+k$cluster
+```
+ - cluster center?
+```{r}
+k$centers
+```
+ 
+Plot x colored by the kmeans cluster assignment and
+ add cluster centers as blue points
+```{r}
+#plot color categorized points
+plot(x,col=k$cluster)
+#plot centers in blue
+points(k$centers,col="blue",pch=15)
+```
+
+
+## Hierarchical Clustering
+```{r}
+# First we need to calculate Euclidean distance between observations
+dist_matrix <- dist(x)
+hc <- hclust(d = dist_matrix)
+# the print method is not so useful here
+hc
+plot(hc)
+#draw a horizontal line across the branch you want to cut
+abline(h=6,col="red")
+#cut tree according to height
+clusters1<-cutree(hc,h=6)
+clusters1
+#cut tree according to #clusters
+clusters2<-cutree(hc,k=2)
+clusters2
+```
+
+Make another data set to analyze with Hierarchical Clustering
+```{r}
+# Step 1. Generate some example data for clustering
+x <- rbind(
+ matrix(rnorm(100, mean=0, sd = 0.3), ncol = 2), # c1
+ matrix(rnorm(100, mean = 1, sd = 0.3), ncol = 2), # c2
+ matrix(c(rnorm(50, mean = 1, sd = 0.3), # c3
+ rnorm(50, mean = 0, sd = 0.3)), ncol = 2))
+colnames(x) <- c("x", "y")
+# Step 2. Plot the data without clustering
+plot(x)
+# Step 3. Generate colors for known clusters
+# (just so we can compare to hclust results)
+col <- as.factor( rep(c("c1","c2","c3"), each=50) )
+plot(x, col=col)
+
+```
+
+Q. Use the dist(), hclust(), plot() and cutree()
+ functions to return 2 and 3 clusters
+Q. How does this compare to your known 'col' groups?
+```{r}
+# Step 4. Cluster the data with Hierarchical Clustering
+dist_matrix <- dist(x)
+hc <- hclust(d = dist_matrix)
+plot(hc)
+# separate into 2 clusters
+clusters2<-cutree(hc,k=2)
+clusters2
+plot(x,col=clusters2)
+table(clusters2)
+#cross tabulate with known
+table(clusters2,col)
+
+# separate into 3 clusters
+clusters3<-cutree(hc,k=3)
+clusters3
+plot(x,col=clusters3)
+table(clusters3)
+#cross tabulate with known
+table(clusters3,col)
+```
+
+
+
+
+
+
+## Principal Component Analysis
+```{r}
+#sample gene expression data
+mydata <- read.csv("https://tinyurl.com/expression-CSV",
+ row.names=1) 
+head(mydata)
+```
+How many genes are in the dataset?
+```{r}
+dim(mydata)
+```
+Run PCA
+```{r}
+# we want genes as columns, samples as rows for prcomp
+pca <- prcomp(t(mydata), scale=TRUE) 
+## See what is returned by the prcomp() function
+attributes(pca)
+## A basic PC1 vs PC2 2-D plot
+plot(pca$x[,1], pca$x[,2])
+```
+
+Make a scree plot
+```{r}
+## Precent variance is often more informative to look at
+pca.var <- pca$sdev^2
+# second argument is #places after decimals to round
+pca.var.per <- round(pca.var/sum(pca.var)*100, 4)
+pca.var.per
+#make a scree plot
+barplot(pca.var.per, main="Scree Plot",
+ xlab="Principal Component", ylab="Percent Variation")
+
+```
+Make a color coded PCA plot
+```{r}
+## A vector of colors for wt and ko samples
+colvec <- colnames(mydata)
+colvec[grep("wt", colvec)] <- "red"
+colvec[grep("ko", colvec)] <- "blue"
+plot(pca$x[,1], pca$x[,2], col=colvec, pch=16,
+ xlab=paste0("PC1 (", pca.var.per[1], "%)"),
+ ylab=paste0("PC2 (", pca.var.per[2], "%)")) 
+```
+Another version of above code
+```{r}
+plot(pca$x[,1],pca$x[,2], col=c("red","red","red","red","red","blue","blue","blue","blue","blue"))
+```
+
+###LAB: PCA for UK food data
+```{r}
+x <- read.csv("UK_foods.csv")
+head(x)
+```
+Q1. How many rows and columns are in your new data frame named x? What R functions could you use to answer this questions?
+```{r}
+dim(x)
+```
+```{r}
+#get rid of left hand column
+rownames(x) <- x[,1]
+x <- x[,-1]
+head(x)
+dim(x)
+```
+
+```{r}
+#shorter way of making the data frame without the left column
+x <- read.csv("UK_foods.csv", row.names=1)
+head(x)
+```
+Q2. Which approach to solving the ‘row-names problem’ mentioned above do you prefer and why? Is one approach more robust than another under certain circumstances?
+
+A. One difference I noticed in the output was that in the first one, the food names are factors, while in the other, the food names are not.
+running x <- x[,-1] multiple times will result in deleting many columns, but I'm not sure why you would do that in the first place.
+
+##Spotting major differences and trends
+
+```{r}
+#make a barplot with color coded food
+barplot(as.matrix(x), beside=T, col=rainbow(nrow(x)))
+#make the same barplot, but stacked
+barplot(as.matrix(x), beside=F, col=rainbow(nrow(x)))
+
+```
+Q3: Changing what optional argument in the above barplot() function results in the following plot?
+beside=F
+
+```{r}
+pairs(x, col=rainbow(10), pch=16)
+```
+Q5: Generating all pairwise plots may help somewhat. Can you make sense of the following code and resulting figure? What does it mean if a given point lies on the diagonal for a given plot?
+It means both countries eat roughly the same amount of that food.
+
+Q6. What is the main differences between N. Ireland and the other countries of the UK in terms of this data-set?
+It looks like N. Ireland eats more dark blue and less orange
+
+##PCA part
+```{r}
+pca <- prcomp( t(x) )
+summary(pca)
+```
+
+Q7. Complete the code below to generate a plot of PC1 vs PC2. The second line adds text labels over the data points.
+```{r}
+# Plot PC1 vs PC2
+plot(pca$x[,1], pca$x[,2], xlab="PC1", ylab="PC2", xlim=c(-270,500))
+text(pca$x[,1], pca$x[,2], colnames(x),col=c("yellow","red","blue","green"))
+```
+
+Calculate the variation each PC accounts for
+```{r}
+v <- round( pca$sdev^2/sum(pca$sdev^2) * 100 )
+v
+#above is the same as the second row of this:
+z <- summary(pca)
+z$importance
+```
+
+Make a scree plot
+```{r}
+barplot(v, xlab="Principal Component", ylab="Percent Variation")
+```
+
+PC1 Loading scores
+```{r}
+par(mar=c(10, 3, 0.35, 0))
+barplot( pca$rotation[,1], las=2 )
+```
+PC2 Loading Scores
+```{r}
+par(mar=c(10, 3, 0.35, 0))
+barplot( pca$rotation[,2], las=2 )
+```
+Q9: Generate a similar ‘loadings plot’ for PC2. What two food groups feature prominantely and what does PC2 maninly tell us about?
+The predominant foods are potatoes and soft drinks.
+
+
+```{r}
+biplot(pca)
+```
+
+
+
+
+
+
+
+
+
