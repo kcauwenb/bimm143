@@ -1,3 +1,9 @@
+#' ---
+#' title: "3T"
+#' author: "Kalyani Cauwenberghs"
+#' date: "October 31, 2019"
+#' ---
+
 # 3T: Data Visualization
 
 x<-rnorm(1000)
