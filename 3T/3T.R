@@ -2,6 +2,7 @@
 #' title: "3T"
 #' author: "Kalyani Cauwenberghs"
 #' date: "October 31, 2019"
+#' output: github_document
 #' ---
 
 # 3T: Data Visualization
