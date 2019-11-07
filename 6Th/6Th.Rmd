@@ -1,0 +1,43 @@
+---
+title: "6Th"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Section 1: In silico docking of drugs to HIV-1 protease
+We want to produce a protein-only PDB file and drug-only PDB file. 
+```{r}
+library(bio3d)
+file.name <- get.pdb("1hsg")
+hiv <- read.pdb(file.name)
+hiv
+```
+Q1: What is the name of the two non protein resid values in this structure? What does resid
+correspond to and how would you get a listing of all reside values in this structure? 
+HOH and MK1
+```{r}
+
+```
+
+```{r}
+protein <- atom.select(hiv, "protein",value=T)
+protein
+```
+
+
+
+```{r}
+prot <- trim.pdb(hiv, "protein")
+protein <- atom.select(hiv, "protein",value=T)
+lig <- trim.pdb(hiv, "ligand")
+ligand <- atom.select(hiv, "ligand",value=T)
+write.pdb(prot, file="1hsg_protein.pdb")
+write.pdb(lig, file="1hsg_ligand.pdb")
+```
+
+##Section 2: Docking ligands into HIV-1 protease
+
+##Section 3: Exploring the conformational dynamics of proteins
