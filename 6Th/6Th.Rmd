@@ -43,4 +43,10 @@ No.
 
 ##Section 2: Docking ligands into HIV-1 protease
 
+```{r}
+res <- read.pdb("all.pdbqt", multi=TRUE)
+write.pdb(res, "results.pdb")
+```
+
+
 ##Section 3: Exploring the conformational dynamics of proteins
