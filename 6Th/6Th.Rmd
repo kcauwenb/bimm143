@@ -15,18 +15,9 @@ file.name <- get.pdb("1hsg")
 hiv <- read.pdb(file.name)
 hiv
 ```
-Q1: What is the name of the two non protein resid values in this structure? What does resid
-correspond to and how would you get a listing of all reside values in this structure? 
+Q1: What is the name of the two non protein resid values in this structure? What does resid correspond to and how would you get a listing of all reside values in this structure? 
+
 HOH and MK1
-```{r}
-
-```
-
-```{r}
-protein <- atom.select(hiv, "protein",value=T)
-protein
-```
-
 
 
 ```{r}
@@ -37,6 +28,18 @@ ligand <- atom.select(hiv, "ligand",value=T)
 write.pdb(prot, file="1hsg_protein.pdb")
 write.pdb(lig, file="1hsg_ligand.pdb")
 ```
+
+
+
+Q2: Can you locate the binding site visually? Note that crystal structures normally lack hydrogen atoms, why?
+
+No.
+
+
+```{r}
+
+```
+
 
 ##Section 2: Docking ligands into HIV-1 protease
 
