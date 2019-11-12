@@ -1,0 +1,183 @@
+---
+title: "7T"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##1. Bioconductor and DESeq2 setup
+```{r eval=FALSE}
+install.packages("BiocManager")
+BiocManager::install()
+
+BiocManager::install("DESeq2")
+library(BiocManager)
+library(DESeq2)
+citation("DESeq2") 
+```
+
+
+##2. Import countData and colData
+```{r}
+counts <- read.csv("airway_scaledcounts.csv", stringsAsFactors = FALSE)
+metadata <-  read.csv("airway_metadata.csv", stringsAsFactors = FALSE)
+head(counts)
+head(metadata)
+```
+We have `r nrow(counts)` genes and `r ncol(counts)` experiments in the dataset.
+
+##3. Toy differential gene expression
+We want to know if the mean across the control is different from the mean across the treated.
+```{r}
+View(metadata)
+control <- metadata[metadata[,"dex"]=="control",]
+control.mean <- rowSums( counts[ ,control$id] )/4 
+names(control.mean) <- counts$ensgene
+```
+
+Q1. How would you make the above code more robust? What would happen if you were to add more samples. Would the values obtained with the exact code above be correct?
+
+We want to take the mean in a way that doesn't hardcode the number of control experiments.
+```{r}
+#View(metadata)
+#find experiments that are control
+control <- metadata[metadata[,"dex"]=="control",]
+#take mean across control
+control.mean <- rowSums( counts[ ,control$id] )/length(control$id)
+#adds names of genes to control.mean
+names(control.mean) <- counts$ensgene
+```
+
+Q2. Follow the same procedure for the treated samples (i.e. calculate the mean per gene across drug treated samples and assign to a labeled vector called treated.mean)
+```{r}
+#View(metadata)
+#find experiments that are treated
+treated <- metadata[metadata[,"dex"]=="treated",]
+#take mean across treated
+treated.mean <- rowSums( counts[ ,treated$id] )/length(treated$id) 
+names(treated.mean) <- counts$ensgene
+```
+
+```{r}
+meancounts <- data.frame(control.mean, treated.mean)
+plot(meancounts$control.mean,meancounts$treated.mean,xlab="Treated",ylab="Control")
+#set both axes on a log scale
+plot.new()
+plot.default(meancounts$control.mean,meancounts$treated.mean,xlab="log Treated",ylab="log Control",log="yx")
+```
+
+##4. Adding annotation data
+add log2fc, which gives expression changes between control and treated for each gene
+```{r}
+meancounts$log2fc <- log2(meancounts[,"treated.mean"]/meancounts[,"control.mean"])
+head(meancounts)
+```
+log2fc = 0 -> no change, log2fc > 0 -> treated > control, log2fc < 0 -> treated < control
+
+remove "weird" (NaN or Inf) results
+```{r}
+#to remove NaN, remove zeroes in control
+#to remove Inf, remove zeroes in treated
+
+#arr.ind=TRUE tells what columns and rows have 0 entries, not just the one dimensional indices.
+zero.vals <- which(meancounts[,1:2]==0, arr.ind=TRUE)
+#demonstration of arr.ind=TRUE
+#x<-data.frame(c(23,0,0),c(0,67,2))
+#x==0
+#which(x==0)
+#which(x==0,arr.ind=TRUE)
+#zero.vals[,1] are the rows with zero values, and unique removes duplicates
+to.rm <- unique(zero.vals[,1])
+#remove any rows with 0 values from the counts
+mycounts <- meancounts[-to.rm,]
+head(mycounts)
+
+
+```
+Q4. What is the purpose of the arr.ind argument in the which() function call above? Why would we then take the first column of the output and need to call the unique() function?
+arr.ind=TRUE tells what columns and rows have 0 entries, not just the one dimensional indices. Then, we want to take the first column because we need rows with 0 values, not columns. Also, we want to call unique because we don't want duplicate rows when we remove rows from the count matrix.
+
+Select rows with extreme changes in expression
+```{r}
+up.ind <- mycounts$log2fc > 2
+down.ind <- mycounts$log2fc < (-2)
+```
+Q5. Using the up.ind and down.ind vectors above can you determine how many up and down regulated genes we have at the greater than 2 fc level?
+There are `r sum(up.ind)` upregulated genes and `r sum(down.ind)` downregulated genes.
+
+```{r}
+head(mycounts[up.ind,])
+head(mycounts[down.ind,])
+```
+skipped this part
+
+##5. DESeq2 analysis
+```{r}
+dds <- DESeqDataSetFromMatrix(countData=counts, 
+                              colData=metadata, 
+                              design=~dex, 
+                              tidy=TRUE)
+dds
+```
+run DESeq2
+```{r}
+dds<-DESeq(dds)
+#get results
+res<-results(dds)
+res
+```
+```{r}
+#order results table by smallest p value
+resOrdered <- res[order(res$pvalue),]
+```
+
+
+##6. Data Visualization
+```{r}
+#siginificant = p value < 0.05 and big fold change magnitude
+
+res$sig <- res$padj<0.05 & abs(res$log2FoldChange)>2
+
+#tells how many are significant (true).
+table(res$sig)
+
+#tells us how many NA's there are in res$sig
+sum(is.na(res$sig))
+
+#plot the volcano
+
+# Set the color palette for our plot
+palette( c("gray","blue") )
+
+plot( res$log2FoldChange,  -log(res$padj), 
+ col=res$sig+1, ylab="-Log(P-value)", xlab="Log2(FoldChange)")
+
+# Add some cut-off lines
+abline(v=c(-2,2), col="darkgray", lty=2)
+abline(h=-log(0.1), col="darkgray", lty=2)
+```
+now add those that are not statistically significant but have big fold change magnitudes.
+```{r}
+# Reset the color palette
+palette("default")
+# Setup our custom point color vector 
+mycols <- rep("gray", nrow(res))
+mycols[ abs(res$log2FoldChange) > 2 ]  <- "red" 
+
+inds <- (res$padj < 0.01) & (abs(res$log2FoldChange) > 2 )
+mycols[ inds ] <- "blue"
+
+#Volcano plot with custom colors 
+plot( res$log2FoldChange,  -log(res$padj), 
+ col=mycols, ylab="-Log(P-value)", xlab="Log2(FoldChange)" )
+
+abline(v=c(-2,2), col="gray", lty=2)
+abline(h=-log(0.1), col="gray", lty=2)
+
+```
+
+
+
+
