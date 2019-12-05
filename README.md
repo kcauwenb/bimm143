@@ -6,3 +6,5 @@ This is my work from [BIMM 143 Fall 2019](https://bioboot.github.io/bimm143_F19/
 - 3T: [R Graphics]()
 
 - 3Th: [sssssssss](https://github.com/kcauwenb/bimm143/blob/master/3Th/3Th.md)
+
+- [5T](https://github.com/kcauwenb/bimm143/blob/master/5T/5T.md)
