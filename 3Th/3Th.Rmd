@@ -1,6 +1,5 @@
 ---
 title: "3Th"
-author: "Kalyani Cauwenberghs"
 output: github_document
 ---
 

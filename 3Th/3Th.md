@@ -1,6 +1,5 @@
 3Th
 ================
-Kalyani Cauwenberghs
 
 This is Header 1
 ================
