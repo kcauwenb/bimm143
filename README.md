@@ -13,4 +13,10 @@ This is my work from [BIMM 143 Fall 2019](https://bioboot.github.io/bimm143_F19/
 
 - 5T: [Unsupervised learning mini-project](https://github.com/kcauwenb/bimm143/blob/master/5T/5T.md)
 
-- 5Th: []
+- 5Th: Testing github
+
+- 6T: [Protein structures](https://github.com/kcauwenb/bimm143/blob/master/6T/6T.md)
+
+- 6Th: [VMD and drug discovery](https://github.com/kcauwenb/bimm143/blob/master/6Th/6Th.md)
+
+-7T: []()
