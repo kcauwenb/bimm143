@@ -1,7 +1,6 @@
 ---
 title: "5T"
 author: "Kalyani Cauwenberghs"
-date: "10/29/2019"
 output: github_document
 ---
 
