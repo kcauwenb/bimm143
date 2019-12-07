@@ -1,7 +1,7 @@
 # BIMM 143 Fall 2019
 This is my work from [BIMM 143 Fall 2019](https://bioboot.github.io/bimm143_F19/) at UC San Diego
 
-## Content
+## Content (3Th = week 3 thursday etc.)
 
 - 3T: [Making plots and customizing color](https://github.com/kcauwenb/bimm143/blob/master/3T/3T.R)
 
@@ -11,6 +11,6 @@ This is my work from [BIMM 143 Fall 2019](https://bioboot.github.io/bimm143_F19/
 
 - 4Th: [K-means clustering, hierarchical clustering, principal component analysis](https://github.com/kcauwenb/bimm143/blob/master/4Th/4Th.md)
 
-- 5T: [5T](https://github.com/kcauwenb/bimm143/blob/master/5T/5T.md)
+- 5T: [Unsupervised learning mini-project](https://github.com/kcauwenb/bimm143/blob/master/5T/5T.md)
 
 - 5Th: []
