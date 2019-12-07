@@ -9,10 +9,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ##1. Bioconductor and DESeq2 setup
 ```{r eval=FALSE}
-install.packages("BiocManager")
-BiocManager::install()
+#install.packages("BiocManager")
 
-BiocManager::install("DESeq2")
+#BiocManager::install("DESeq2")
 library(BiocManager)
 library(DESeq2)
 citation("DESeq2") 
