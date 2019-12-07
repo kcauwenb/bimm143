@@ -2,7 +2,7 @@
 title: "5T"
 author: "Kalyani Cauwenberghs"
 date: "10/29/2019"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
@@ -148,7 +148,7 @@ axis(2, at=pve, labels=round(pve,2)*100 )
 
 ```{r}
 ## ggplot based graph
-install.packages("factoextra")
+#install.packages("factoextra")
 library(factoextra)
 fviz_eig(wisc.pr, addlabels = TRUE)
 ```
@@ -203,7 +203,7 @@ table(wisc.hclust.clusters, diagnosis)
 
 ```{r}
 data.scaled <- scale(wisc.data)
-wisc.km <- kmeans(data.scaled, centers=2, nstart= ___)
+wisc.km <- kmeans(data.scaled, centers=2, nstart=20)
 #create a table
 table(wisc.km$cluster,diagnosis)
 ```
@@ -215,40 +215,40 @@ table(wisc.km$cluster,wisc.hclust.clusters)
 
 
 ##5. Combining methods
-
-```{r}
-grps <- cutree(wisc.pr.hclust, k=2)
-table(grps)
-
-table(grps, diagnosis)
-
-plot(wisc.pr$x[,1:2], col=grps)
-
-plot(wisc.pr$x[,1:2], col=diagnosis)
-
-g <- as.factor(grps)
-levels(g)
-
-g <- relevel(g,2)
-levels(g)
-
-# Plot using our re-ordered factor 
-plot(wisc.pr$x[,1:2], col=g)
-
-install.packages("rgl")
-library(rgl)
-plot3d(wisc.pr$x[,1:3], xlab="PC 1", ylab="PC 2", zlab="PC 3", cex=1.5, size=1, type="s", col=grps)
-#for html output
-rglwidget(width = 400, height = 400)
-```
-
 ```{r}
 # Use the distance along the first 7 PCs for clustering i.e. wisc.pr$x[, 1:7]
-wisc.pr.hclust <- hclust(wisc.pr$x[, 1:7], method="ward.D2")
+#wisc.pr.hclust <- hclust(wisc.pr$x[, 1:7], method="ward.D2")
 #cut into 2 clusters
-wisc.pr.hclust.clusters <- cutree(wisc.pr.hclust, k=2)
+#wisc.pr.hclust.clusters <- cutree(wisc.pr.hclust, k=2)
 
 ```
+
+```{r}
+#grps <- cutree(wisc.pr.hclust, k=2)
+#table(grps)
+
+#table(grps, diagnosis)
+
+#plot(wisc.pr$x[,1:2], col=grps)
+
+#plot(wisc.pr$x[,1:2], col=diagnosis)
+
+#g <- as.factor(grps)
+#levels(g)
+
+#g <- relevel(g,2)
+#levels(g)
+
+# Plot using our re-ordered factor 
+#plot(wisc.pr$x[,1:2], col=g)
+
+#install.packages("rgl")
+#library(rgl)
+#plot3d(wisc.pr$x[,1:3], xlab="PC 1", ylab="PC 2", zlab="PC 3", cex=1.5, size=1, type="s", col=grps)
+#for html output
+#rglwidget(width = 400, height = 400)
+```
+
 
 Bookmark: https://bioboot.github.io/bimm143_F19/class-material/lab-9-bimm143.html#6_sensitivityspecificity
 

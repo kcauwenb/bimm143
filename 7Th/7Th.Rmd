@@ -1,0 +1,185 @@
+---
+title: "7Th"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Section 1. Differential Expression Analysis
+```{r}
+#library(DESeq2)
+```
+
+```{r}
+colData <- read.csv("GSE37704_metadata.csv", row.names=1)
+countData <- read.csv("GSE37704_featurecounts.csv", row.names=1)
+# Note we need to remove the odd first $length col for deSEQ2
+countData <- as.matrix(countData[,-1])
+head(countData)
+```
+Double checkthat colnames of countData without length column are the same as rownames of colData
+```{r}
+#check if all entries in a vector are true
+all(colnames(countData)==rownames(colData))
+```
+
+Remove any genes (rows) that have 0 for all experiments (cols)
+```{r}
+sumcol <- countData %*% (as.matrix(rep(1,ncol(countData))))
+keep_rows<-which(sumcol!=0)
+countData <- as.matrix(countData[keep_rows,])
+```
+
+Perform diff. exp. analysis
+```{r}
+dds <- DESeqDataSetFromMatrix(countData=countData,
+                             colData=colData,
+                             design=~condition)
+dds <- DESeq(dds)
+```
+get results
+```{r}
+res <- results(dds)
+res
+plot(res$log2FoldChange,-log(res$padj))
+```
+add color to plot
+```{r}
+#first make everything gray
+mycols<-rep("gray",length(res$padj))
+#then make everything with extreme fold change blue
+mycols[abs(res$log2FoldChange)>2]<-"blue"
+mycols
+plot( res$log2FoldChange, -log(res$padj), col=mycols, xlab="Log2(FoldChange)", ylab="-Log(P-value)" )
+```
+
+#install packages
+```{r}
+#BiocManager::install("AnnotationDbi")
+#BiocManager::install("org.Hs.eg.db")
+library("AnnotationDbi")
+library("org.Hs.eg.db")
+```
+```{r}
+#can translate between all the following databases:
+columns(org.Hs.eg.db)
+```
+
+```{r}
+res$symbol = mapIds(org.Hs.eg.db,
+                    keys=row.names(countData), #IDs
+                    keytype="ENSEMBL", #ID format
+                    column="SYMBOL", #desired format
+                    multiVals="first")
+res$entrez = mapIds(org.Hs.eg.db,
+                    keys=row.names(countData),
+                    keytype="ENSEMBL",
+                    column="ENTREZID",
+                    multiVals="first")
+
+res$name =   mapIds(org.Hs.eg.db,
+                    keys=row.names(countData),
+                    keytype="ENSEMBL",
+                    column="GENENAME",
+                    multiVals="first")
+head(res$symbol)
+head(res$entrez)
+head(res$name)
+#write to file, ordered by p-value
+res = res[order(res$pvalue),]
+write.csv(res, file="deseq_results.csv")
+```
+
+
+##Section 2. Pathway Analysis
+
+```{r}
+#BiocManager::install( c("pathview", "gage", "gageData") )
+
+library("pathview")
+library("gage")
+library("gageData")
+```
+
+
+```{r}
+library(gage)
+library(gageData)
+
+#load the data sets
+#KEGG pathways 
+data(kegg.sets.hs)
+#signaling and metabolic pathways
+data(sigmet.idx.hs)
+
+# Focus on signaling and metabolic pathways only
+kegg.sets.hs = kegg.sets.hs[sigmet.idx.hs]
+
+# Examine the first 3 pathways
+head(kegg.sets.hs, 3)
+```
+
+#map our gene set to database
+```{r}
+foldchanges = res$log2FoldChange
+names(foldchanges) = res$entrez
+head(foldchanges)
+```
+
+```{r}
+# Get the results
+keggres = gage(foldchanges, gsets=kegg.sets.hs)
+#downregulated pathways
+head(keggres$less)
+```
+
+```{r}
+#make one pathway infographic
+pathview(gene.data=foldchanges, pathway.id="hsa04110")
+
+
+#make more pathway infographics
+
+# A different PDF based output of the same data
+pathview(gene.data=foldchanges, pathway.id="hsa04110", kegg.native=FALSE)
+## Focus on top 5 upregulated pathways here for demo purposes only
+keggrespathways <- rownames(keggres$greater)[1:5]
+
+# Extract the 8 character long IDs part of each string
+keggresids = substr(keggrespathways, start=1, stop=8)
+keggresids
+pathview(gene.data=foldchanges, pathway.id=keggresids, species="hsa")
+
+```
+
+
+##Section 3. Gene Ontology (GO)
+```{r}
+data(go.sets.hs)
+data(go.subs.hs)
+
+# Focus on Biological Process subset of GO
+gobpsets = go.sets.hs[go.subs.hs$BP]
+
+gobpres = gage(foldchanges, gsets=gobpsets, same.dir=TRUE)
+
+lapply(gobpres, head)
+```
+
+
+
+##Section 4. Reactome Analysis
+```{r}
+sig_genes <- res[res$padj <= 0.05 & !is.na(res$padj), "symbol"]
+print(paste("Total number of significant genes:", length(sig_genes)))
+write.table(sig_genes, file="significant_genes.txt", row.names=FALSE, col.names=FALSE, quote=FALSE)
+```
+
+
+
+
+
+
+

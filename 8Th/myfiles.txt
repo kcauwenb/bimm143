@@ -1,0 +1,12 @@
+__MACOSX
+bggn213_01_unix
+bggn213_01_unix.zip
+myfiles.txt
+mylist.txt
+mynewfile.txt
+__MACOSX
+bggn213_01_unix
+bggn213_01_unix.zip
+myfiles.txt
+mylist.txt
+mynewfile.txt

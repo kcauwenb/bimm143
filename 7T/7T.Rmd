@@ -178,6 +178,10 @@ abline(h=-log(0.1), col="gray", lty=2)
 
 ```
 
+```{r}
+#save our results for the next day
+write.csv(res, file = "expression_results.csv")
+```
 
 
 

@@ -2,7 +2,9 @@
 title: "4T"
 author: "Kalyani Cauwenberghs"
 date: "10/22/2019"
-output: html_document
+output:
+  html_document:
+    keep_md: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -16,11 +18,11 @@ source("http://tinyurl.com/rescale-R")
 ```
 
 ```{r}
-rescale2(c(1:10),"barry")
+#rescale2(c(1:10),"barry")
 ```
 
 ```{r}
-rescale(c(1:10),"barry")
+#rescale(c(1:10),"barry")
 ```
 
 Write a function to find where NA elements are in input vectors:
@@ -85,7 +87,7 @@ bothNA2<-function(x,y){
 }
 ```
 
-```{r}
+```{r eval=FALSE}
 bothNA2(x,y3)
 ```
 
@@ -119,27 +121,27 @@ x3<-c(100, NA, NA, NA, NA, NA, NA, NA)
 ```
 
 ```{r}
-  grade(x1)
-  grade(x2)
-  grade(x3)
-  grade2(x3)
+  #grade(x1)
+  #grade(x2)
+  #grade(x3)
+  #grade2(x3)
   # now grade all students in an example class
   url <- "https://tinyurl.com/gradeinput"
   hw<-read.csv(url,row.names=1)
-  apply(hw,1,grade2)
+  #apply(hw,1,grade2)
 ```
 
 Explore a Bioconductor package
 ```{r}
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
+#if (!requireNamespace("BiocManager", quietly = TRUE))
+    #install.packages("BiocManager")
 
-BiocManager::install("Rcade")
+#BiocManager::install("Rcade")
 ```
 Run Vignettes
 ```{r}
-source("http://127.0.0.1:24970/library/Rcade/doc/Rcade.Rnw")
-source("Rcade.R")
+#source("http://127.0.0.1:24970/library/Rcade/doc/Rcade.Rnw")
+#source("Rcade.R")
 ```
 
 

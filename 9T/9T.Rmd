@@ -1,0 +1,121 @@
+---
+title: "9T"
+author: "Kalyani Cauwenberghs"
+date: "11/26/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+###PART 1:
+##1. The NCI Genomic Data Commons
+
+Q1. How many Cases (i.e. patient samples) have been found to have p53 mutations?
+4008
+
+Q2. What are the top 6 misssense mutations found in this gene?
+HINT: Scroll down to the ‘TP53 - Protein’ section and mouse over the displayed plot. For example R175H is found in 156 cases.
+R175H, R273C, R248Q, R273H, R248W, R282W.
+
+Q3. Which domain of the protein (as annotated by PFAM) do these mutations reside in?
+PF00870
+
+Q4. What are the top 6 primary sites (i.e. cancer locations such as Lung, Brain, etc.) with p53 mutations and how many primary sites have p53 mutations been found in?
+HINT: Clicking on the number links in the Cancer Distribution section will take you to a summary of available data accross cases, genes, and mutations for p53. Looking at the cases data will give you a ranked listing of primary sites.
+
+
+
+
+
+
+Q5. What is the most frequentely mutated position associated with cancer in the KRas protein (i.e. the amino acid with the most mutations)?
+
+Q6. Are KRas mutations common in Pancreatic Adenocarcinoma (i.e. is the Pancreas a common ‘primary site’ for KRas mutations?).
+
+Q6. What is the ‘TGCA project’ with the most KRas mutations?
+
+Q7. What precent of cases for this ‘TGCA project’ have KRas mutations and what precent of cases have p53 mutations?
+HINT: Placing your mouse over the project bar in the Cancer Distribution panel will bring up a tooltip with useful summary data.
+
+Q8. How many TGCA Pancreatic Adenocarcinoma cases (i.e. patients from the TCGA-PAAD project) have RNA-Seq data available?
+
+
+##2. The GenomicDataCommons R package
+
+```{r}
+#install/add the packages
+#BiocManager::install( c("GenomicDataCommons", "TCGAbiolinks", "maftools") )
+#library("GenomicDataCommons")
+#library("TCGAbiolinks")
+#library("maftools")
+status()
+```
+
+##3. Querying the GDC from R
+```{r}
+projects <- getGDCprojects()
+head(projects)
+```
+
+```{r}
+cases_by_project <- cases() %>%
+  facet("project.project_id") %>%
+  aggregations()
+head(cases_by_project)
+```
+
+Q9. Write the R code to make a barplot of the cases per project. Lets plot this data with a log scale for the y axis (log="y"), rotated axis labels (las=2) and color the bar coresponding to the TCGA-PAAD project.
+```{r}
+x <- cases_by_project$project.project_id
+
+# Make a custom color vector for our plot
+colvec <- rep("lightblue", nrow(x))
+colvec[which(x[,1]=="TCGA-PAAD")] <- "red"
+
+# Plot with 'log' for y axis and rotate labels with 'las'
+par(mar=c(13,4.1,2.1,2.1))
+barplot(height=x[,2], names.arg=x[,1], log="y", col=colvec, las=2)
+```
+
+```{r}
+samp <- getSampleFilesSummary("TCGA-PAAD")
+head(samp)
+```
+
+
+##4. Variant analysis with R
+
+
+###PART 2:
+
+##Section 1. Protein sequences from healthy and tumor tissue
+"mer" = number of residues in peptide
+```{r}
+library(bio3d)
+p53_fasta<-read.fasta("lecture18_sequences.fa")
+#p53<-read.delim("lecture18_sequences.fa")
+#healthy<-paste(p53[1:7,], collapse = "")
+#mutated<-paste(p53[9:13,], collapse = "")
+```
+Q1: Identify sequence regions that contain all 9-mer peptides that are only found in the tumor. Hint: You will need to first identify the sites of mutation in the above sequences and then extract the surrounding subsequence region. This subsequence should encompass all possible 9-mers in the tumor derived sequence. In other words extract the subsequence from 8 residues before and 8 residues after all point mutations in the tumor sequence.
+
+
+
+find all differences in alignment
+```{r}
+align<-seqaln(p53_fasta)
+align
+```
+
+
+ide<-conserv(p53_fasta$ali, method='identity')
+pos<- which(ide<1)[1]
+subseq_pos<-(pos-8):(pos+8)
+mutant.sites<-which(ide<1)
+```
+
+
+
+
+
