@@ -1,6 +1,5 @@
 ---
 title: "4T"
-author: "Kalyani Cauwenberghs"
 output: github_document
 ---
 
