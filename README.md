@@ -19,4 +19,6 @@ This is my work from [BIMM 143 Fall 2019](https://bioboot.github.io/bimm143_F19/
 
 - 6Th: [VMD and drug discovery](https://github.com/kcauwenb/bimm143/blob/master/6Th/6Th.md)
 
--7T: []()
+- 7T: [Differential expression analysis](https://github.com/kcauwenb/bimm143/blob/master/7T/7T.Rmd)
+
+- 7Th: [More deSEQ2, kegg pathways, gene ontology](https://github.com/kcauwenb/bimm143/blob/master/7T/7T.Rmd)
