@@ -70,7 +70,8 @@ plot.default(meancounts$control.mean,meancounts$treated.mean,xlab="log Treated",
 ##4. Adding annotation data
 add log2fc, which gives expression changes between control and treated for each gene
 ```{r}
-meancounts$log2fc <- log2(meancounts[,"treated.mean"]/meancounts[,"control.mean"])
+meancounts$log2fc <-
+  log2(meancounts[,"treated.mean"]/meancounts[,"control.mean"])
 head(meancounts)
 ```
 log2fc = 0 -> no change, log2fc > 0 -> treated > control, log2fc < 0 -> treated < control

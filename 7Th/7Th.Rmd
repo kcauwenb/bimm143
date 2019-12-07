@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ##Section 1. Differential Expression Analysis
 ```{r}
-#library(DESeq2)
+library(DESeq2)
 ```
 
 ```{r}
@@ -51,7 +51,6 @@ add color to plot
 mycols<-rep("gray",length(res$padj))
 #then make everything with extreme fold change blue
 mycols[abs(res$log2FoldChange)>2]<-"blue"
-mycols
 plot( res$log2FoldChange, -log(res$padj), col=mycols, xlab="Log2(FoldChange)", ylab="-Log(P-value)" )
 ```
 
@@ -135,7 +134,7 @@ keggres = gage(foldchanges, gsets=kegg.sets.hs)
 head(keggres$less)
 ```
 
-```{r}
+```{r  eval=FALSE}
 #make one pathway infographic
 pathview(gene.data=foldchanges, pathway.id="hsa04110")
 
