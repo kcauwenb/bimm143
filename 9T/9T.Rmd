@@ -2,7 +2,7 @@
 title: "9T"
 author: "Kalyani Cauwenberghs"
 date: "11/26/2019"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
@@ -46,10 +46,10 @@ Q8. How many TGCA Pancreatic Adenocarcinoma cases (i.e. patients from the TCGA-P
 ```{r}
 #install/add the packages
 #BiocManager::install( c("GenomicDataCommons", "TCGAbiolinks", "maftools") )
-#library("GenomicDataCommons")
-#library("TCGAbiolinks")
-#library("maftools")
-status()
+library("GenomicDataCommons")
+library("TCGAbiolinks")
+library("maftools")
+#status()
 ```
 
 ##3. Querying the GDC from R
