@@ -21,7 +21,7 @@ This is my work from [BIMM 143 Fall 2019](https://bioboot.github.io/bimm143_F19/
 
 - 7T: [Differential expression analysis](https://github.com/kcauwenb/bimm143/blob/master/7T/7T.Rmd)
 
-- 7Th: [More deSEQ2, kegg pathways, gene ontology](https://github.com/kcauwenb/bimm143/blob/master/7Th/7Th.Rmd)
+- 7Th: [More deSEQ2, kegg pathways, gene ontology](https://github.com/kcauwenb/bimm143/blob/master/7Th/7Th.md)
 
 - 8T: [Cytoscape, pathway analysis](https://github.com/kcauwenb/bimm143/blob/master/8T/8T.Rmd)
 
