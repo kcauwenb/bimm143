@@ -1,7 +1,6 @@
 ---
 title: "3Th"
 author: "Kalyani Cauwenberghs"
-date: "10/17/2019"
 output: github_document
 ---
 

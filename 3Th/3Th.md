@@ -1,7 +1,6 @@
 3Th
 ================
 Kalyani Cauwenberghs
-10/17/2019
 
 This is Header 1
 ================
